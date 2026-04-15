@@ -14,7 +14,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.*;
 
 @Entity
@@ -22,14 +21,8 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(
-    name = "books",
-        uniqueConstraints = {
-        @UniqueConstraint(columnNames = "isbn")
-    }
-)
-
-
+@Table(name = "books")
+@Builder
 public class Book  extends BaseEntity{
 
     @Id
@@ -44,9 +37,7 @@ public class Book  extends BaseEntity{
     @Column(nullable = false)
     private String author;
 
-    @Column(unique = true, nullable = false, length = 20)
-    private String isbn;
-
+  
     @Column(length = 1000)
     private String description;
 
@@ -60,7 +51,7 @@ public class Book  extends BaseEntity{
     @Column(nullable = false)
     private BookStatus status;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String coverImageUrl;
 
 }
