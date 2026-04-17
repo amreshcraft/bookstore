@@ -1,5 +1,6 @@
 package com.amreshmaurya.bookstoreapp.dao;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -7,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import com.amreshmaurya.bookstoreapp.entity.Book;
 import com.amreshmaurya.bookstoreapp.repository.BookRepository;
-
 
 @Component
 public class BookDAO {
@@ -18,15 +18,23 @@ public class BookDAO {
         this.bookRepository = bookRepository;
     }
 
-    public Book createBook(Book book){
+    public Book save(Book book){
         return bookRepository.save(book);
     }
 
-    public Book findById(UUID id){
-        return bookRepository.findById(id).orElseThrow(()-> new RuntimeException("Book Not found"));
+    public Optional<Book> findById(UUID id){
+        return bookRepository.findById(id);
     }
 
-    public void deleteById(UUID id){
-        bookRepository.deleteById(id);
+    public List<Book> findAll(){
+        return bookRepository.findAll();
+    }
+
+    public void delete(Book book){
+        bookRepository.delete(book);
+    }
+
+    public boolean existsById(UUID id){
+        return bookRepository.existsById(id);
     }
 }

@@ -14,7 +14,9 @@ public class SecurityConfig {
 
     @Bean 
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity){
-        httpSecurity.httpBasic(h->h.disable()).sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).formLogin(formLogin->formLogin.disable()).csrf(c->c.disable());
+        httpSecurity.authorizeHttpRequests(auth->auth.requestMatchers(    "/swagger-ui/**",
+                "/v3/api-docs/**",
+                "/actuator/**").permitAll().anyRequest().permitAll()).httpBasic(h->h.disable()).sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).formLogin(formLogin->formLogin.disable()).csrf(c->c.disable());
         return  httpSecurity.build();
     }
     

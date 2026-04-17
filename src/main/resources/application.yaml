@@ -17,3 +17,9 @@ spring:
           jdbc:
             batch_size: 20
       open-in-view: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
