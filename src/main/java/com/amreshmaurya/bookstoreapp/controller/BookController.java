@@ -4,9 +4,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.amreshmaurya.bookstoreapp.dto.BookDTO;
-import com.amreshmaurya.bookstoreapp.dto.CreateBookDTO;
-import com.amreshmaurya.bookstoreapp.dto.UpdateBookDTO;
+import com.amreshmaurya.bookstoreapp.dto.book.BookDTO;
+import com.amreshmaurya.bookstoreapp.dto.book.CreateBookDTO;
+import com.amreshmaurya.bookstoreapp.dto.book.UpdateBookDTO;
 import com.amreshmaurya.bookstoreapp.service.BookService;
 import com.amreshmaurya.bookstoreapp.wrapper.ApiResponse;
 

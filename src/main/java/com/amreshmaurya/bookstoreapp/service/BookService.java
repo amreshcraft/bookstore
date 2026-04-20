@@ -8,15 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.amreshmaurya.bookstoreapp.dao.BookDAO;
-import com.amreshmaurya.bookstoreapp.dto.BookDTO;
-import com.amreshmaurya.bookstoreapp.dto.CreateBookDTO;
-import com.amreshmaurya.bookstoreapp.dto.UpdateBookDTO;
+import com.amreshmaurya.bookstoreapp.dto.book.BookDTO;
+import com.amreshmaurya.bookstoreapp.dto.book.CreateBookDTO;
+import com.amreshmaurya.bookstoreapp.dto.book.UpdateBookDTO;
 import com.amreshmaurya.bookstoreapp.entity.Book;
 import com.amreshmaurya.bookstoreapp.mapper.BookMapper;
-
-
-
-
 
 @Service
 public class BookService {
@@ -24,26 +20,26 @@ public class BookService {
     private final BookDAO bookDAO;
     private final BookMapper bookMapper;
 
-    public BookService(BookDAO bookDAO, BookMapper bookMapper){
+    public BookService(BookDAO bookDAO, BookMapper bookMapper) {
         this.bookDAO = bookDAO;
         this.bookMapper = bookMapper;
     }
 
     @Transactional
-    public BookDTO createBook(CreateBookDTO dto){
+    public BookDTO createBook(CreateBookDTO dto) {
         Book book = bookMapper.toEntity(dto);
         Book saved = bookDAO.save(book);
         return bookMapper.toDTO(saved);
     }
 
-    public BookDTO getBook(UUID id){
+    public BookDTO getBook(UUID id) {
         Book book = bookDAO.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book not found"));
 
         return bookMapper.toDTO(book);
     }
 
-    public List<BookDTO> getAllBooks(){
+    public List<BookDTO> getAllBooks() {
         return bookDAO.findAll()
                 .stream()
                 .map(bookMapper::toDTO)
@@ -51,20 +47,18 @@ public class BookService {
     }
 
     @Transactional
-    public BookDTO updateBook(UUID id, UpdateBookDTO dto){
+    public BookDTO updateBook(UUID id, UpdateBookDTO dto) {
 
         Book book = bookDAO.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book not found"));
 
-        //  safe partial update
         bookMapper.updateEntity(dto, book);
 
-        //  no save() needed (dirty checking)
         return bookMapper.toDTO(book);
     }
 
     @Transactional
-    public void deleteBook(UUID id){
+    public void deleteBook(UUID id) {
 
         Book book = bookDAO.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book not found"));
