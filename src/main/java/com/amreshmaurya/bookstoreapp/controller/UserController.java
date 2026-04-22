@@ -4,6 +4,8 @@ import com.amreshmaurya.bookstoreapp.dto.user.CreateUserDTO;
 import com.amreshmaurya.bookstoreapp.dto.user.UpdateUserDTO;
 import com.amreshmaurya.bookstoreapp.dto.user.UserDTO;
 import com.amreshmaurya.bookstoreapp.service.UserService;
+import com.amreshmaurya.bookstoreapp.util.JwtUtil;
+import com.amreshmaurya.bookstoreapp.util.PasswordUtil;
 import com.amreshmaurya.bookstoreapp.wrapper.ApiResponse;
 
 import jakarta.validation.Valid;
@@ -20,9 +22,10 @@ public class UserController {
 
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, PasswordUtil passwordUtil,JwtUtil jwtUtil) {
         this.userService = userService;
     }
+
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

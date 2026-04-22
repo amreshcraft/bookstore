@@ -24,12 +24,15 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordUtil passwordUtil;
 
+    //  constructor
     public UserService(UserDAO userDAO, UserMapper userMapper, PasswordUtil passwordUtil) {
         this.userDAO = userDAO;
         this.userMapper = userMapper;
         this.passwordUtil = passwordUtil;
     }
 
+
+    // create user
     @Transactional
     public UserDTO createUser(CreateUserDTO dto) {
         User user = userMapper.toEntity(dto);
@@ -43,6 +46,8 @@ public class UserService {
         return userMapper.toDTO(saved);
     }
 
+
+    // get single user
     public UserDTO getUser(UUID id) {
         User user = userDAO.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -50,6 +55,8 @@ public class UserService {
         return userMapper.toDTO(user);
     }
 
+
+    //  get all users
     public List<UserDTO> getAllUsers() {
         return userDAO.findAll()
                 .stream()
@@ -57,6 +64,8 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+
+    // update user
     @Transactional
     public UserDTO updateUser(UUID id, UpdateUserDTO dto) {
 
@@ -75,6 +84,8 @@ public class UserService {
         return userMapper.toDTO(user);
     }
 
+
+    //  delete user
     @Transactional
     public void deleteUser(UUID id) {
 
@@ -84,6 +95,8 @@ public class UserService {
         userDAO.delete(user);
     }
 
+
+    //  activate user
     @Transactional
     public UserDTO activateUser(UUID id) {
 
@@ -95,6 +108,7 @@ public class UserService {
         return userMapper.toDTO(user);
     }
 
+    // update status
     @Transactional
     public UserDTO updateStatus(UUID id, UserStatus status) {
 
@@ -106,5 +120,9 @@ public class UserService {
         return userMapper.toDTO(user);
     }
 
-    
+    // user find by email
+    public User findByEmail(String email) {
+        return userDAO.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email"));
+    }
 }

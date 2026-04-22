@@ -40,4 +40,8 @@ public class UserDAO {
     public boolean existsById(UUID id){
         return userRepository.existsById(id);
     }
+
+    public Optional<User> findByEmail(String email){
+    return userRepository.findByEmail(email);
+}
 }
