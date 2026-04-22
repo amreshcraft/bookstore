@@ -59,18 +59,15 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private boolean isDeleted = false;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
-    private UserStatus status;
+    private UserStatus status = UserStatus.INACTIVE;
 
     @ElementCollection(fetch = FetchType.LAZY)
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private List<Role> roles;
 
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
 
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
 
 }

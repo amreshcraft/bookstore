@@ -15,9 +15,10 @@ public class UserMapper {
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
                 .username(dto.getUsername())
+                .roles(dto.getRoles())
                 .email(dto.getEmail())
                 .password(dto.getPassword())
-                .status(dto.getStatus())
+                // .status(dto.getStatus())
                 .build();
     }
 
@@ -38,8 +39,11 @@ public class UserMapper {
         if (dto.getPassword() != null) {
             user.setPassword(dto.getPassword());
         }
-        if (dto.getStatus() != null) {
-            user.setStatus(dto.getStatus());
+        // if (dto.getStatus() != null) {
+        //     user.setStatus(dto.getStatus());
+        // }
+        if(dto.getRoles() != null){
+            user.setRoles(dto.getRoles());
         }
 
     }
@@ -51,7 +55,7 @@ public class UserMapper {
                 .lastName(user.getLastName())
                 .username(user.getUsername())
                 .email(user.getEmail())
-                .status(user.getStatus())
+                // .status(user.getStatus())
                 .roles(user.getRoles())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())

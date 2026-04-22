@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.amreshmaurya.bookstoreapp.constant.Role;
+import com.amreshmaurya.bookstoreapp.constant.UserStatus;
 import com.amreshmaurya.bookstoreapp.dao.UserDAO;
 import com.amreshmaurya.bookstoreapp.dto.user.CreateUserDTO;
 import com.amreshmaurya.bookstoreapp.dto.user.UpdateUserDTO;
@@ -82,4 +83,28 @@ public class UserService {
 
         userDAO.delete(user);
     }
+
+    @Transactional
+    public UserDTO activateUser(UUID id) {
+
+        User user = userDAO.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setStatus(UserStatus.ACTIVE);
+
+        return userMapper.toDTO(user);
+    }
+
+    @Transactional
+    public UserDTO updateStatus(UUID id, UserStatus status) {
+
+        User user = userDAO.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setStatus(status);
+
+        return userMapper.toDTO(user);
+    }
+
+    
 }

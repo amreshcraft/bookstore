@@ -6,12 +6,16 @@ import java.util.UUID;
 import com.amreshmaurya.bookstoreapp.constant.Role;
 import com.amreshmaurya.bookstoreapp.constant.UserStatus;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class UserDTO {
 
@@ -22,7 +26,8 @@ public class UserDTO {
     private String username;
     private String email;
 
-    private UserStatus status;
+    @Builder.Default
+    private UserStatus status = UserStatus.INACTIVE;
 
     private List<Role> roles; 
 

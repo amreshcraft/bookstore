@@ -26,11 +26,11 @@ public class UserDAO {
     }
 
     public Optional<User> findById(UUID id){
-        return userRepository.findById(id);
+        return userRepository.findByIdWithRoles(id);
     }
 
     public List<User> findAll(){
-        return userRepository.findAll();
+        return userRepository.findAllWithRoles();
     }
 
     public void delete(User user){
