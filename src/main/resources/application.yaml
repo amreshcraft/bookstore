@@ -3,6 +3,12 @@ spring:
     name: bookstoreapp
   config:
     import: optional:file:.env[.properties]
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 5MB
+        
+        
   datasource:
     url: jdbc:postgresql://localhost:5432/bookstore
     username: postgres
@@ -30,3 +36,6 @@ jwt:
   secret: ${JWT_SECRET}
   access-expiration: 900000      # 15 min (in ms)
   refresh-expiration: 604800000  # 7 days (in ms)
+
+cors:
+  allowedUrl: ${ALLOWED_URL}

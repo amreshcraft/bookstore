@@ -10,7 +10,7 @@ import io.swagger.v3.oas.models.info.Info;
 public class OpenApiConfig {
 
     @Bean
-    public OpenAPI customOpenAPI() {
+    public OpenAPI swaggerOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
                         .title("Bookstore API")

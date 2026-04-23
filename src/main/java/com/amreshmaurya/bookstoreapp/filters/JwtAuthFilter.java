@@ -21,6 +21,10 @@ import jakarta.servlet.http.HttpServletResponse;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private static final List<String> PUBLIC_URLS = List.of(
+            "/swagger-ui",
+            "/swagger-ui.html",
+            "/v3/api-docs");
 
     public JwtAuthFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
@@ -31,6 +35,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
+
+        // skip swagger uri
+
+        String path = request.getRequestURI();
+
+        if (path.startsWith("/swagger-ui") || path.startsWith("/v3/api-docs")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         String token = null;
 
@@ -75,7 +88,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         return null;
     }
 
-    
     private String extractTokenFromCookie(HttpServletRequest request) {
 
         if (request.getCookies() == null)
