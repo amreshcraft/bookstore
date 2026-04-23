@@ -27,6 +27,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
         httpSecurity
                 .httpBasic(h -> h.disable())
+                .cors(cors->{})
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(formLogin -> formLogin.disable()).csrf(c -> c.disable())
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/","/swagger-ui/**",

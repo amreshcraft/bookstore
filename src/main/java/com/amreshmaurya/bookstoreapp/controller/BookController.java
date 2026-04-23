@@ -47,7 +47,7 @@ public class BookController {
         return ApiResponse.success(bookService.getBook(id));
     }
 
-    @GetMapping
+    @PostMapping("/all")
     public ApiResponse<List<BookDTO>> getAllBooks(){
         return ApiResponse.success(bookService.getAllBooks());
     }
