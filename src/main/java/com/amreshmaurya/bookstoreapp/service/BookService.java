@@ -1,11 +1,13 @@
 package com.amreshmaurya.bookstoreapp.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.amreshmaurya.bookstoreapp.dao.BookDAO;
 import com.amreshmaurya.bookstoreapp.dto.book.BookDTO;
@@ -19,16 +21,32 @@ public class BookService {
 
     private final BookDAO bookDAO;
     private final BookMapper bookMapper;
+    private final S3FileService s3FileService;
 
-    public BookService(BookDAO bookDAO, BookMapper bookMapper) {
+    public BookService(BookDAO bookDAO, BookMapper bookMapper,S3FileService s3FileService) {
         this.bookDAO = bookDAO;
         this.bookMapper = bookMapper;
+        this.s3FileService = s3FileService;
     }
 
+    // @Transactional
+    // public BookDTO createBook(CreateBookDTO dto) {
+    // Book book = bookMapper.toEntity(dto);
+    // Book saved = bookDAO.save(book);
+    // return bookMapper.toDTO(saved);
+    // }
+
     @Transactional
-    public BookDTO createBook(CreateBookDTO dto) {
+    public BookDTO createBook(CreateBookDTO dto, MultipartFile file) throws IOException {
+
+        if (file != null && !file.isEmpty()) {
+            String imageUrl = s3FileService.uploadFile(file);
+            dto.setCoverImageUrl(imageUrl);
+        }
+
         Book book = bookMapper.toEntity(dto);
         Book saved = bookDAO.save(book);
+
         return bookMapper.toDTO(saved);
     }
 

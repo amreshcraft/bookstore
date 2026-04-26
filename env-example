@@ -1,0 +1,9 @@
+JWT_SECRET=amresh-super-secure-secret-key-for-jwt
+DB_PASSWORD=
+ALLOWED_URL=
+
+# aws config
+AWS_S3_ACCESS_KEY=
+AWS_S3_SECRET_KEY=
+AWS_S3_REGION=
+S3_BUCKET_NAME=
