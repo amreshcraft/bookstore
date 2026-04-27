@@ -23,7 +23,7 @@ public class BookService {
     private final BookMapper bookMapper;
     private final S3FileService s3FileService;
 
-    public BookService(BookDAO bookDAO, BookMapper bookMapper,S3FileService s3FileService) {
+    public BookService(BookDAO bookDAO, BookMapper bookMapper, S3FileService s3FileService) {
         this.bookDAO = bookDAO;
         this.bookMapper = bookMapper;
         this.s3FileService = s3FileService;
@@ -65,10 +65,21 @@ public class BookService {
     }
 
     @Transactional
-    public BookDTO updateBook(UUID id, UpdateBookDTO dto) {
+    public BookDTO updateBook(UUID id, UpdateBookDTO dto, MultipartFile file) throws IOException {
 
         Book book = bookDAO.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book not found"));
+
+        if (file != null && !file.isEmpty()) {
+
+            if (book.getCoverImageUrl() != null) {
+                s3FileService.deleteFileFromS3Bucket(book.getCoverImageUrl());
+            }
+
+            String newImageUrl = s3FileService.uploadFile(file);
+
+            book.setCoverImageUrl(newImageUrl);
+        }
 
         bookMapper.updateEntity(dto, book);
 
@@ -81,6 +92,13 @@ public class BookService {
         Book book = bookDAO.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book not found"));
 
+        try {
+            if (book.getCoverImageUrl() != null) {
+                s3FileService.deleteFileFromS3Bucket(book.getCoverImageUrl());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete image from S3");
+        }
         bookDAO.delete(book);
     }
 }

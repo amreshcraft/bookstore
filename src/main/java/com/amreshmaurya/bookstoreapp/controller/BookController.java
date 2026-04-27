@@ -12,7 +12,6 @@ import com.amreshmaurya.bookstoreapp.dto.book.UpdateBookDTO;
 import com.amreshmaurya.bookstoreapp.service.BookService;
 import com.amreshmaurya.bookstoreapp.wrapper.ApiResponse;
 
-import jakarta.validation.Valid;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/v1/books")
@@ -48,8 +46,6 @@ public class BookController {
     public BookDTO createBook(
             @RequestPart("book") CreateBookDTO dto,
             @RequestPart("file") MultipartFile file) throws IOException {
-        System.out.println(dto);
-        System.out.println(file.getOriginalFilename());
         return bookService.createBook(dto, file);
     }
 
@@ -63,12 +59,13 @@ public class BookController {
         return ApiResponse.success(bookService.getAllBooks());
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<BookDTO> updateBook(
             @PathVariable UUID id,
-            @Valid @RequestBody UpdateBookDTO dto) {
-        System.out.println("put api hit");
-        return ApiResponse.success(bookService.updateBook(id, dto));
+            @RequestPart("book") UpdateBookDTO dto,
+            @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+
+        return ApiResponse.success(bookService.updateBook(id, dto, file));
     }
 
     @DeleteMapping("/{id}")

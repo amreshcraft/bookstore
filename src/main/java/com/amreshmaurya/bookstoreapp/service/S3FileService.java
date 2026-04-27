@@ -1,6 +1,7 @@
 package com.amreshmaurya.bookstoreapp.service;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -30,41 +31,53 @@ public class S3FileService {
 
     public String uploadFile(MultipartFile file) throws IOException {
 
-        //  null / empty check
+        // null / empty check
         if (file == null || file.isEmpty()) {
             throw new RuntimeException("File is required");
         }
 
-        //  size validation
+        // size validation
         if (file.getSize() > MAX_FILE_SIZE) {
             throw new RuntimeException("File size must be <= 3MB");
         }
 
-        //  content type validation
+        // content type validation
         String contentType = file.getContentType();
-        if (contentType == null ||
-                (!contentType.equals("image/png") &&
-                 !contentType.equals("image/jpeg") &&
-                 !contentType.equals("image/jpg"))) {
-            throw new RuntimeException("Only PNG, JPG, JPEG files are allowed");
+        System.out.println("ctype: " + contentType);
+        if (contentType == null || !contentType.toLowerCase().startsWith("image/")) {
+            throw new RuntimeException("Only image files are allowed");
         }
 
-        //  safe file name
+        // safe file name
         String fileName = "books/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
 
-        //  put request with metadata
+        // put request with metadata
         PutObjectRequest putRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(fileName)
-                .contentType(contentType) 
+                .contentType(contentType)
                 .build();
 
         s3Client.putObject(
                 putRequest,
-                RequestBody.fromBytes(file.getBytes())
-        );
+                RequestBody.fromBytes(file.getBytes()));
 
-        
         return "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + fileName;
+    }
+
+    public void deleteFileFromS3Bucket(String url) {
+        if (url == null || url.isEmpty()) {
+            return;
+        }
+        try {
+            URI uri = new URI(url);
+            String path = uri.getPath();
+            String fileName = path.substring(1);
+            s3Client.deleteObject(DeleteObjectRequest.builder().bucket(this.bucketName).key(fileName).build());
+
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid S3 URL");
+        }
+
     }
 }
