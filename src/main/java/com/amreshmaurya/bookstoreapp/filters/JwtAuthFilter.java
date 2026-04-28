@@ -21,10 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private static final List<String> PUBLIC_URLS = List.of(
-            "/swagger-ui",
-            "/swagger-ui.html",
-            "/v3/api-docs");
+
 
     public JwtAuthFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;

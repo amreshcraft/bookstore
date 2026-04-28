@@ -29,13 +29,6 @@ public class BookService {
         this.s3FileService = s3FileService;
     }
 
-    // @Transactional
-    // public BookDTO createBook(CreateBookDTO dto) {
-    // Book book = bookMapper.toEntity(dto);
-    // Book saved = bookDAO.save(book);
-    // return bookMapper.toDTO(saved);
-    // }
-
     @Transactional
     public BookDTO createBook(CreateBookDTO dto, MultipartFile file) throws IOException {
 

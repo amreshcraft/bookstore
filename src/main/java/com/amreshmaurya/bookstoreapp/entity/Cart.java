@@ -20,12 +20,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 @Entity
+@Table(name = "carts")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "carts")
+@NoArgsConstructor
 public class Cart extends BaseEntity {
 
     @Id
@@ -36,15 +37,9 @@ public class Cart extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @OneToMany(
-        mappedBy = "cart",
-        cascade = CascadeType.ALL,
-        orphanRemoval = true
-    )
-    private List<CartItem> items;
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItem> cartItems;
 
     @Column(nullable = false)
     private BigDecimal totalAmount = BigDecimal.ZERO;
-
-   
 }

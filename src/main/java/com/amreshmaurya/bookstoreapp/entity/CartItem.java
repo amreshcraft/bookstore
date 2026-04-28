@@ -18,19 +18,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(
-    name = "cart_items",
-    uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"cart_id", "book_id"})
-    }
-)
-public class CartItem {
+@Table(name = "cart_items", uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "cart_id", "book_id" })
+})
+public class CartItem extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -47,9 +43,9 @@ public class CartItem {
     @Column(nullable = false)
     private Integer quantity;
 
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
+    @Column(nullable = false)
+    private BigDecimal priceAtAdded;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false)
     private BigDecimal totalPrice;
 }
