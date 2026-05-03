@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import tools.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/api/v1/books")
@@ -44,8 +45,12 @@ public class BookController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public BookDTO createBook(
-            @RequestPart("book") CreateBookDTO dto,
+            @RequestPart("book") String bookJson,
             @RequestPart("file") MultipartFile file) throws IOException {
+
+        ObjectMapper mapper = new ObjectMapper();
+        CreateBookDTO dto = mapper.readValue(bookJson, CreateBookDTO.class);
+
         return bookService.createBook(dto, file);
     }
 
