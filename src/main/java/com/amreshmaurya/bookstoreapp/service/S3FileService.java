@@ -16,9 +16,6 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
-
-
-
 @Service
 public class S3FileService {
 
@@ -53,13 +50,10 @@ public class S3FileService {
 
         s3Client.putObject(
                 putRequest,
-                RequestBody.fromInputStream(file.getInputStream(), file.getSize())
-        );
+                RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
 
         return buildFileUrl(fileName);
     }
-
-    // ---------------- VALIDATION ----------------
 
     private void validateImage(MultipartFile file) throws IOException {
 
@@ -73,12 +67,15 @@ public class S3FileService {
 
         // real validation (content-based)
         BufferedImage image = ImageIO.read(file.getInputStream());
+        System.out.println("file: " + file);
         if (image == null) {
-            throw new RuntimeException("Invalid image file");
+            String contentType = file.getContentType();
+
+            if (contentType == null || !contentType.equals("image/webp")) {
+                throw new RuntimeException("Invalid image file");
+            }
         }
     }
-
-    // ---------------- FILE NAME ----------------
 
     private String generateFileName(String originalName) {
 
@@ -94,7 +91,6 @@ public class S3FileService {
         return filename.substring(filename.lastIndexOf(".") + 1);
     }
 
-
     private String resolveContentType(String filename) {
 
         String ext = getExtension(filename).toLowerCase();
@@ -109,11 +105,9 @@ public class S3FileService {
         };
     }
 
-
     private String buildFileUrl(String key) {
         return "https://" + bucketName + ".s3." + region + ".amazonaws.com/" + key;
     }
-
 
     public void deleteFileFromS3Bucket(String url) {
 
@@ -129,8 +123,7 @@ public class S3FileService {
                     DeleteObjectRequest.builder()
                             .bucket(bucketName)
                             .key(key)
-                            .build()
-            );
+                            .build());
 
         } catch (Exception e) {
             throw new RuntimeException("Invalid S3 URL");

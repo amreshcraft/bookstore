@@ -1,5 +1,4 @@
 
-
 package com.amreshmaurya.bookstoreapp.service;
 
 import java.math.BigDecimal;
@@ -35,15 +34,13 @@ public class CartService {
 
     @Transactional
     public CartResponse addToCart(UUID userId, AddToCartRequest request) {
-        // Get or create cart for user
+
         Cart cart = cartRepository.findByUserIdAndIsActiveTrue(userId)
                 .orElseGet(() -> createNewCart(userId));
 
-        // Get book details
         Book book = bookRepository.findById(request.getBookId())
                 .orElseThrow(() -> new RuntimeException("Book not found"));
 
-        // Validate book availability
         if (book.getStatus() != BookStatus.AVAILABLE) {
             throw new RuntimeException("Book is not available for purchase");
         }
@@ -52,11 +49,10 @@ public class CartService {
             throw new RuntimeException("Insufficient stock. Available: " + book.getStockQuantity());
         }
 
-        // Check if book already in cart
         CartItem existingItem = cartItemRepository.findByCartAndBook(cart, book).orElse(null);
 
         if (existingItem != null) {
-            // Update quantity
+
             int newQuantity = existingItem.getQuantity() + request.getQuantity();
             if (book.getStockQuantity() < newQuantity) {
                 throw new RuntimeException("Insufficient stock for updated quantity");
@@ -64,7 +60,7 @@ public class CartService {
             existingItem.setQuantity(newQuantity);
             cartItemRepository.save(existingItem);
         } else {
-            // Create new cart item
+
             CartItem cartItem = CartItem.builder()
                     .cart(cart)
                     .book(book)
@@ -89,7 +85,6 @@ public class CartService {
             throw new RuntimeException("Cart item does not belong to this cart");
         }
 
-        // Validate stock
         Book book = cartItem.getBook();
         if (book.getStockQuantity() < quantity) {
             throw new RuntimeException("Insufficient stock. Available: " + book.getStockQuantity());
@@ -134,7 +129,7 @@ public class CartService {
     private Cart createNewCart(UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        
+
         Cart cart = Cart.builder()
                 .user(user)
                 .isActive(true)
@@ -150,19 +145,19 @@ public class CartService {
     private CartResponse getCartResponse(Cart cart) {
         CartResponse response = new CartResponse();
         response.setCartId(cart.getId());
-        
+
         BigDecimal totalAmount = BigDecimal.ZERO;
         for (CartItem item : cart.getCartItems()) {
             totalAmount = totalAmount.add(item.getSubtotal());
         }
-        
+
         response.setTotalAmount(totalAmount);
         response.setTotalItems(cart.getCartItems().size());
-        
+
         response.setItems(cart.getCartItems().stream()
                 .map(this::mapToCartItemResponse)
                 .collect(Collectors.toList()));
-        
+
         return response;
     }
 

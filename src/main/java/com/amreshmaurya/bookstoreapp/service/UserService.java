@@ -24,13 +24,12 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordUtil passwordUtil;
 
-    //  constructor
+    // constructor
     public UserService(UserDAO userDAO, UserMapper userMapper, PasswordUtil passwordUtil) {
         this.userDAO = userDAO;
         this.userMapper = userMapper;
         this.passwordUtil = passwordUtil;
     }
-
 
     // create user
     @Transactional
@@ -46,7 +45,6 @@ public class UserService {
         return userMapper.toDTO(saved);
     }
 
-
     // get single user
     public UserDTO getUser(UUID id) {
         User user = userDAO.findById(id)
@@ -55,15 +53,13 @@ public class UserService {
         return userMapper.toDTO(user);
     }
 
-
-    //  get all users
+    // get all users
     public List<UserDTO> getAllUsers() {
         return userDAO.findAll()
                 .stream()
                 .map(userMapper::toDTO)
                 .collect(Collectors.toList());
     }
-
 
     // update user
     @Transactional
@@ -84,8 +80,7 @@ public class UserService {
         return userMapper.toDTO(user);
     }
 
-
-    //  delete user
+    // delete user
     @Transactional
     public void deleteUser(UUID id) {
 
@@ -95,15 +90,15 @@ public class UserService {
         userDAO.delete(user);
     }
 
-
-    //  activate user
+    // activate user
     @Transactional
     public UserDTO activateUser(UUID id) {
 
         User user = userDAO.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
+        
         user.setStatus(UserStatus.ACTIVE);
+        userDAO.save(user);
 
         return userMapper.toDTO(user);
     }
