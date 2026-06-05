@@ -46,7 +46,9 @@ public class AuthController {
         User user = userService.findByEmail(dto.getEmail());
 
         if (!passwordUtil.matches(dto.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+            // throw new RuntimeException("Invalid credentials");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.failure("Invalid credentials"));
         }
 
         String accessToken = jwtUtil.generateToken(user.getId().toString());

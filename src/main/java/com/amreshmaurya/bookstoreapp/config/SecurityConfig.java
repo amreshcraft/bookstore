@@ -1,8 +1,5 @@
 package com.amreshmaurya.bookstoreapp.config;
 
-import com.amreshmaurya.bookstoreapp.filters.JwtAuthFilter;
-import com.amreshmaurya.bookstoreapp.filters.RateLimitFilter;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -10,6 +7,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.amreshmaurya.bookstoreapp.filters.JwtAuthFilter;
+import com.amreshmaurya.bookstoreapp.filters.RateLimitFilter;
 
 @EnableWebSecurity
 @Configuration
@@ -34,6 +34,7 @@ public class SecurityConfig {
                         "/swagger-ui.html",
                         "/v3/api-docs/**",
                         "/actuator/**",
+                        "/health/**",
                         "/api/v1/auth/**").permitAll().anyRequest().authenticated())
                         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                         .addFilterAfter(rateLimitFilter,JwtAuthFilter.class);
