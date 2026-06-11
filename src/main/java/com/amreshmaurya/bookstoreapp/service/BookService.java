@@ -1,20 +1,29 @@
 package com.amreshmaurya.bookstoreapp.service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.amreshmaurya.bookstoreapp.constant.BookStatus;
 import com.amreshmaurya.bookstoreapp.dao.BookDAO;
+import com.amreshmaurya.bookstoreapp.dto.PagedResponse;
 import com.amreshmaurya.bookstoreapp.dto.book.BookDTO;
 import com.amreshmaurya.bookstoreapp.dto.book.CreateBookDTO;
 import com.amreshmaurya.bookstoreapp.dto.book.UpdateBookDTO;
 import com.amreshmaurya.bookstoreapp.entity.Book;
 import com.amreshmaurya.bookstoreapp.mapper.BookMapper;
+import com.amreshmaurya.bookstoreapp.specification.BookSpecification;
 
 @Service
 public class BookService {
@@ -50,12 +59,41 @@ public class BookService {
         return bookMapper.toDTO(book);
     }
 
-    public List<BookDTO> getAllBooks() {
-        return bookDAO.findAll()
-                .stream()
-                .map(bookMapper::toDTO)
-                .collect(Collectors.toList());
-    }
+    // public List<BookDTO> getAllBooks() {
+    //     return bookDAO.findAll()
+    //             .stream()
+    //             .map(bookMapper::toDTO)
+    //             .collect(Collectors.toList());
+    // }
+
+
+
+
+public PagedResponse<BookDTO> getAllBooks(
+        int page, int size, String sortBy,
+        String title, String author,
+        BookStatus status,
+        BigDecimal minPrice, BigDecimal maxPrice) {
+
+    Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
+    Specification<Book> spec = BookSpecification.filter(title, author, status, minPrice, maxPrice);
+    Page<Book> bookPage = bookDAO.findAll(spec, pageable);
+
+    List<BookDTO> books = bookPage.getContent()
+            .stream()
+            .map(bookMapper::toDTO)
+            .collect(Collectors.toList());
+
+    return PagedResponse.<BookDTO>builder()
+            .content(books)
+            .page(bookPage.getNumber())
+            .size(bookPage.getSize())
+            .totalElements(bookPage.getTotalElements())
+            .totalPages(bookPage.getTotalPages())
+            .last(bookPage.isLast())
+            .build();
+}
+
 
     @Transactional
     public BookDTO updateBook(UUID id, UpdateBookDTO dto, MultipartFile file) throws IOException {

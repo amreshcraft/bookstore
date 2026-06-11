@@ -1,9 +1,11 @@
 package com.amreshmaurya.bookstoreapp.dao;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import com.amreshmaurya.bookstoreapp.entity.Book;
@@ -14,27 +16,31 @@ public class BookDAO {
 
     private final BookRepository bookRepository;
 
-    public BookDAO(BookRepository bookRepository){
+    public BookDAO(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
 
-    public Book save(Book book){
+    public Book save(Book book) {
         return bookRepository.save(book);
     }
 
-    public Optional<Book> findById(UUID id){
+    public Optional<Book> findById(UUID id) {
         return bookRepository.findById(id);
     }
 
-    public List<Book> findAll(){
-        return bookRepository.findAll();
+    public Page<Book> findAll(Pageable pageable) {
+        return bookRepository.findAll(pageable);
     }
 
-    public void delete(Book book){
+    public Page<Book> findAll(Specification<Book> spec, Pageable pageable) {
+        return bookRepository.findAll(spec, pageable);
+    }
+
+    public void delete(Book book) {
         bookRepository.delete(book);
     }
 
-    public boolean existsById(UUID id){
+    public boolean existsById(UUID id) {
         return bookRepository.existsById(id);
     }
 }
